@@ -1,0 +1,96 @@
+# Node.js
+node_modules/
+
+# Build files
+build/
+dist/
+
+# Dependency directories
+/.pnp/
+.pnp.js
+
+# Testing
+/coverage/
+
+# IDE files
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Logs
+logs/
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Compiled binary addons (like node-sass)
+/build/Release
+
+# Yarn
+.yarn/
+yarn-error.log
+.pnp.js
+.pnp.cjs
+
+# TypeScript
+*.tsbuildinfo
+
+# Flow
+.flowconfig
+
+# Editor directories and files
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Jest
+/coverage/
+
+# Next.js
+/.next/
+/out/
+
+# Nuxt.js
+/.nuxt/
+/dist/
+
+# Gatsby
+/.cache/
+/public/
+
+# Yarn 2
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# Parcel
+.cache/
+dist/
+
+# Snowpack
+/snowpack/
+
+# Rollup
+/dist/
+/.rpt2_cache/
+/.rts2_cache_cjs/
+/.rts2_cache_es/
+/.rts2_cache_umd/
+
+# Babel
+/dist/
