@@ -31,7 +31,7 @@ app.use(cors({
 
 app.use(express.json());
 
-const authorization = async (req:Request, res:Response, next: NextFunction) => {
+const authorization = async (req: Request, res: Response, next: NextFunction) => {
     if (req.headers.authorization) {
         // const authToken = req.headers.authorization;
         // // console.log(authToken)
@@ -174,7 +174,7 @@ app.post('/login', async (req, res) => {
 });
 
 app.get("/auth-endpoint", authorization, (req, res) => {
-    res.json({ message: "You are authorized to access me" });
+    res.json({message: "You are authorized to access me"});
 });
 
 app.get('/auth/google/callback', async (req, res) => {
@@ -200,7 +200,7 @@ app.get('/auth/google/callback', async (req, res) => {
     const user = await collection.findOne({email: googleUser.email as string});
 
     if (!user) {
-        await collection.insertOne({email:googleUser.email, name:googleUser.name}).then((r) => {
+        await collection.insertOne({email: googleUser.email, name: googleUser.name}).then((r) => {
             const token = jwt.sign({_id: r.insertedId}, JWT_SECRET as string);
             res.redirect(`http://localhost:3000?access_token=${token}`);
         }).catch((e) => {
@@ -217,28 +217,61 @@ app.get("/logout", authorization, (req, res) => {
     return res.removeHeader("Authorization")
 });
 
-app.get("/getInfo/:id", authorization, async(req, res) => {
+app.get("/user/:id", authorization, async (req, res) => {
     const number = req.params.id;
     let collection = db.collection("Customer");
     const user = await collection.findOne({phone: number as string});
     if (user) {
         res.json(user).status(200);
     } else {
-        res.json({message: 'Customer not found !'}).status(400);
+        res.status(201).send('Customer not found');
     }
 })
 
-app.get("/profile", authorization, async(req, res) => {
+app.patch("/create-customer", authorization, async (req, res) => {
+    const user = {...req.body, _id: new ObjectId()};
+
+    let collection = db.collection("Customer");
+    await collection.insertOne(user).then((result) => {
+        res.status(201).send({
+            message: "User Created Successfully",
+            result,
+        })
+    }).catch((e) => {
+        res.status(500).send({
+            message: "Error creating user",
+            e,
+        });
+    });
+
+    // const user = await collection.findOne({phone: number as string});
+    // if (user) {
+    //     res.json(user).status(200);
+    // } else {
+    //     res.json({message: 'Customer not found !'}).status(400);
+    // }
+})
+
+app.get("/profile", authorization, async (req, res) => {
     let collection = db.collection("Employee");
     const token = req.headers.authorization?.split(' ')[1];
     if (token) {
         const decoded: { _id?: ObjectId } = jwt.verify(token, JWT_SECRET as string) as { _id?: ObjectId };
         if (decoded) {
             const user = await collection.findOne({_id: new ObjectId(decoded._id)});
-            res.send({email:user?.email, name: user?.first + " " + user?.name}).status(200);
-        }
-    }
+            res.send({email: user?.email, name: user?.first + " " + user?.name}).status(200);
+        } else
+            return res.status(401).json({message: "can't find user"});
+    } else
+        return res.status(401).json({message: "authorization token not set"});
 });
+
+app.put("/update-profile", authorization, async (req, res) => {
+    const {_id, email, name, phone, ZIP, address} = req.body;
+    let collection = db.collection("Customer");
+    let result = await collection.updateOne({_id: new ObjectId(_id)}, {$set : {"name":name, "email":email, "phone":phone, "ZIP":ZIP, "address":address}});
+    res.send(result).status(200);
+})
 
 // start the Express server
 function main() {

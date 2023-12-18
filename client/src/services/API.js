@@ -34,6 +34,12 @@ class API {
       if (response.status === 401) {
         AccessToken.remove();
       }
+      if (response.status === 201) {
+        return {
+          data: response,
+          status: response.status,
+        }
+      }
 
       return {
         data: await response.json(),

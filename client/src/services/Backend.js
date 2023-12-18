@@ -6,10 +6,6 @@ class Backend {
     return await API.send('GET', url, false, auth);
   };
 
-  findData = async (url, auth = true) => {
-    return await API.send('GET', url, auth);
-  }
-
   login = async (credentials) => {
     const response = await API.send('POST', '/login', credentials, false);
     if (response.status === 200) {
@@ -26,9 +22,6 @@ class Backend {
     return response;
   }
 
-  getProfile = async () => {
-    return await API.send('GET', '/profile', "", true);
-  }
 
   forgotPassword = async (payload) => {
     return await API.send('POST', '/forgot-password', payload, false);
@@ -36,6 +29,9 @@ class Backend {
 
   resetPassword = async (token, payload) => {
     return await API.send('POST', '/reset-password/' + token, payload, false);
+  }
+  createProfile = async (payload) => {
+    return await API.send('PATCH', '/create-customer', payload, true);
   }
 
   updateProfile = async (payload) => {
@@ -48,10 +44,6 @@ class Backend {
 
   storeAnnotation = async (data) => {
     return await API.send('POST', '/annotation', data, true);
-  }
-
-  getAnnotations = async () => {
-    return await API.send('GET', '/annotation', true);
   }
 }
 
