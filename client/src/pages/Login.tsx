@@ -37,6 +37,10 @@ export default function App() {
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     };
+
+    const GoogleSubmit = () => {
+        window.location.href = "https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=http%3A%2F%2Flocalhost%3A5000%2Fauth%2Fgoogle%2Fcallback&client_id=782155215416-67v3mv8uk2h6vsu8mc94gmps190u1k8o.apps.googleusercontent.com&access_type=offline&response_type=code&prompt=consent&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email";
+    }
     return (
         <div style={{position: 'absolute', height: 100 + 'vh', width: 100 + 'vw', backgroundColor: '#232323'}}>
             <div style={{
@@ -69,8 +73,7 @@ export default function App() {
                         '& > :not(style)': {m: 1, width: '25ch'},
                     }}
                 >
-                    <Button
-                        href={"https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=http%3A%2F%2Flocalhost%3A5000%2Fauth%2Fgoogle%2Fcallback&client_id=782155215416-67v3mv8uk2h6vsu8mc94gmps190u1k8o.apps.googleusercontent.com&access_type=offline&response_type=code&prompt=consent&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email"}>Google</Button>
+                    <Button onClick={GoogleSubmit}>Google</Button>
                     <Divider>ou</Divider>
                     <TextField sx={{input: {height: "3vh"}}}
                                id="standard-basic"

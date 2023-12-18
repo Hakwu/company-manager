@@ -2,18 +2,14 @@ import express, {Request, Response, NextFunction} from "express";
 import cors from "cors";
 import {PORT, JWT_SECRET, GOOGLE_CLIENT_SECRET, GOOGLE_CLIENT_ID} from "./config";
 import "express-async-errors";
-// import posts from "./routes/posts.mjs";
 import cookieParser from "cookie-parser";
 import * as querystring from "querystring";
-import session from "express-session";
 import bcrypt from 'bcrypt';
 import bodyParser from "body-parser";
 import axios from 'axios';
 import jwt from "jsonwebtoken";
 import {connectToDatabase, db} from "./db/conn";
 import {ObjectId} from "mongodb";
-
-import auth from "./routes/AuthMiddleware";
 
 import User from "./Model/userModel";
 
@@ -37,8 +33,8 @@ app.use(express.json());
 
 const authorization = async (req:Request, res:Response, next: NextFunction) => {
     if (req.headers.authorization) {
-        const authToken = req.headers.authorization;
-        // console.log(authToken)
+        // const authToken = req.headers.authorization;
+        // // console.log(authToken)
         next();
     } else {
         console.log('Authorization Header is missing.');
@@ -165,7 +161,10 @@ app.post('/login', async (req, res) => {
             });
         }
         const token = jwt.sign({_id: user._id}, JWT_SECRET as string);
-        res.status(200).json({ message: "Logged in successfully", token: token});
+        res.status(200).json({
+            message: "Logged in successfully",
+            token: token
+        });
     }).catch((e) => {
         res.status(400).send({
             message: "Invalid email or password",
@@ -199,33 +198,20 @@ app.get('/auth/google/callback', async (req, res) => {
         });
     let collection = db.collection("Employee");
     const user = await collection.findOne({email: googleUser.email as string});
-    if (!user) {
-        await collection.insertOne({_id: new ObjectId(), email:googleUser.email, name:googleUser.name}).then((result) => {
-            res.status(201).send({
-                message: "User registered with Google Successfully",
-                // token: token,
-            }).redirect("http://localhost:3000/");
-        }).catch((e) => {
-            res.status(500).send({
-                message: "Error creating user with Google",
-                e,
-            }).redirect("http://localhost:3000/login");
-        });
-    }
-    // res.send({message: "Connected with Google Successfuly", token:token}).status(200);
-    res.redirect("http://localhost:3000/")
-    // need to find the way to send data and redirect after it.
-})
 
-// app.get("/auth/me", (req, res) => {
-//     try {
-//         const decoded = jwt.verify(req.cookies["auth"], JWT_SECRET as string);
-//         return res.send(decoded);
-//     } catch (err) {
-//         console.log(err);
-//         res.send(null);
-//     }
-// });
+    if (!user) {
+        await collection.insertOne({email:googleUser.email, name:googleUser.name}).then((r) => {
+            const token = jwt.sign({_id: r.insertedId}, JWT_SECRET as string);
+            res.redirect(`http://localhost:3000?access_token=${token}`);
+        }).catch((e) => {
+            console.log(e);
+            res.redirect("http://localhost:3000/login");
+        });
+    } else {
+        const token = jwt.sign({_id: user._id}, JWT_SECRET as string);
+        res.redirect(`http://localhost:3000?access_token=${token}`);
+    }
+})
 
 app.get("/logout", authorization, (req, res) => {
     return res.removeHeader("Authorization")
@@ -236,7 +222,7 @@ app.get("/getInfo/:id", authorization, async(req, res) => {
     let collection = db.collection("Customer");
     const user = await collection.findOne({phone: number as string});
     if (user) {
-        res.json({user}).status(200);
+        res.json(user).status(200);
     } else {
         res.json({message: 'Customer not found !'}).status(400);
     }
@@ -244,13 +230,11 @@ app.get("/getInfo/:id", authorization, async(req, res) => {
 
 app.get("/profile", authorization, async(req, res) => {
     let collection = db.collection("Employee");
-    console.log(collection)
     const token = req.headers.authorization?.split(' ')[1];
     if (token) {
         const decoded: { _id?: ObjectId } = jwt.verify(token, JWT_SECRET as string) as { _id?: ObjectId };
         if (decoded) {
             const user = await collection.findOne({_id: new ObjectId(decoded._id)});
-            console.log(user);
             res.send({email:user?.email, name: user?.first + " " + user?.name}).status(200);
         }
     }
