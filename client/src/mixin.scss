@@ -1,0 +1,64 @@
+@mixin background($url, $repeat: no-repeat, $position: center center, $size: contain, $color: unset) {
+    background: url($url) $repeat $position / $size;
+    @if ($color != unset) {
+        background-color: $color;
+    }
+}
+
+//@mixin font-face($name, $file : $name, $weight : normal, $style : normal){
+//  font-family: $name;
+//  src: url('https://adserver.adotmob.com/common/fonts/#{$file}/#{$name}.eot');
+//  src: local('☺'), url('https://adserver.adotmob.com/common/fonts/#{$file}/#{$name}.woff') format('woff'),
+//  url('https://adserver.adotmob.com/common/fonts/#{$file}/#{$name}.ttf') format('truetype'),
+//  url('https://adserver.adotmob.com/common/fonts/#{$file}/#{$name}.svg') format('svg');
+//  font-weight: $weight;
+//  font-style: $style;
+//}
+
+@mixin transition($property: all, $duration: 0.75s, $timing: ease-in-out, $delay: 0s) {
+    transition: $property $duration $timing $delay;
+}
+
+@mixin anim($name, $duration: 0.75s, $timing: ease-in-out, $delay: 0s, $direction: normal, $mode: both, $count: 1) {
+    animation: $name $duration $timing $direction $count $mode $delay;
+}
+
+// DirectionTilt can be X or Y
+@mixin tilt($nameTilt: tilt, $directionTilt: 'X', $valueTilt: '5px', $durationTilt: 4s, $countTilt: infinite) {
+    @keyframes #{$nameTilt} {
+        0%,
+        20%,
+        40% {
+            transform: translateX(0) translateY(0);
+        }
+        10%,
+        30% {
+            transform: translate#{$directionTilt}'(#{$valueTilt})';
+        }
+    }
+    @include anim($name: $nameTilt, $duration: $durationTilt, $count: $countTilt);
+}
+
+@mixin absolute($height: 100%, $width: 100%, $top: 0, $left: 0, $right: unset, $bottom: unset) {
+    @if ($bottom != unset) {
+        $top: unset;
+        bottom: $bottom;
+    }
+
+    @if ($top != unset) {
+        top: $top;
+    }
+
+    @if ($right != unset) {
+        $left: unset;
+        right: $right;
+    }
+
+    @if ($left != unset) {
+        left: $left;
+    }
+
+    position: absolute;
+    height: $height;
+    width: $width;
+}

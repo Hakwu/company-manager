@@ -1,0 +1,195 @@
+@import 'mixin.scss';
+@import url('https://fonts.googleapis.com/css?family=Inter');
+
+* {
+    box-sizing: border-box;
+    --light-background: #fff;
+    --light-font-color: black;
+    --sidebar-width: 212px;
+    --light-selected-color: rgba(28, 28, 28, 0.05);
+}
+
+body,
+html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: white !important;
+}
+
+body {
+    line-height: 24px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    letter-spacing: 0;
+}
+
+img {
+    height: auto;
+    max-width: 100%;
+}
+
+a,
+a:focus,
+button:focus {
+    outline: none !important;
+    text-decoration: none;
+    box-shadow: unset !important;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+ul,
+li,
+label,
+span {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-family: Inter, serif;
+}
+
+p {
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100dvh;
+    display: flex;
+    width: var(--sidebar-width);
+    background-color: var(--light);
+    flex-direction: column;
+    border-right: 1px lightgray solid;
+
+    .logo-detail {
+        display: flex;
+        padding: 20px 16px 0 16px;
+        .logo-name {
+            font-size: 22px;
+            color: var(--light-font-color);
+            font-weight: 600;
+        }
+        user-select: none;
+    }
+
+    .nav-links {
+        height: 100dvh;
+        padding: 30px 16px 150px 16px;
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+        row-gap: 4px;
+        user-select: none;
+        .title {
+            display: flex;
+            padding: 4px 12px 4px 12px;
+            align-items: center;
+            height: 28px;
+            color: gray;
+        }
+        li.selected {
+            a {
+                border-radius: 12px;
+                background-color: var(--light-selected-color);
+            }
+        }
+        li {
+            position: relative;
+            transition: all 0.4s ease;
+            height: 36px;
+            a {
+                display: flex;
+                align-items: center;
+                text-decoration: none;
+                height: 100%;
+                justify-content: flex-end;
+                .nav-container {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    width: 144px;
+                    .link-name {
+                        font-size: 14px;
+                        font-weight: 400;
+                        color: var(--light-font-color);
+                        width: 116px;
+                    }
+                    .icon-container {
+                        display: flex;
+                        height: 20px;
+                        width: 20px;
+                        color: var(--light-font-color);
+                        justify-content: center;
+                        align-items: center;
+                        .icon {
+                            font-size: 16.25px;
+                        }
+                    }
+                }
+            }
+        }
+
+        li:hover {
+            a {
+                border-radius: 12px;
+                background-color: var(--light-selected-color);
+            }
+        }
+    }
+    .logout-container {
+        //background-color: red;
+        font-size: 15px;
+        border-radius: 0;
+        padding: 10px 16px 10px 16px;
+        color: var(--light-font-color);
+
+        .icon {
+            font-size: 16.25px;
+        }
+    }
+}
+
+#container {
+    position: relative;
+    top: 0;
+    height: 100vh;
+    left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
+    background-color: var(--light-background);
+    color: var(--light-font-color);
+    transition: all 0.4s ease;
+}
+
+.content {
+    div {
+        text-align: center;
+    }
+}
+
+.form {
+    @include absolute($top: 25dvh, $left: 2.5%, $width: 95%, $height: 50dvh);
+    background-color: #fffdf2;
+    border-radius: 20px;
+    border: 1px solid black;
+
+    .MuiFormControl-root {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    button {
+        position: absolute;
+        left: 68%;
+        top: 51%;
+        transform: translate(-50%, -50%);
+    }
+}
